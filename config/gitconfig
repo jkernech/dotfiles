@@ -1,0 +1,91 @@
+[core]
+  excludesfile = ~/.gitignore.global
+  attributesFile = ~/.gitattributes.global
+	autocrlf = input
+	safecrlf = warn
+[pager]
+  diff = "delta"
+  show = "diff-so-fancy | less --tabs=1,5 -RFXM"
+[credential]
+  helper = osxkeychain
+[http]
+	postBuffer = 524288000
+[filter "lfs"]
+  clean = git-lfs clean %f
+  smudge = git-lfs smudge %f
+  required = true
+[commit]
+  gpgsign = true
+[push]
+  default = simple
+  autoSetupRemote = true
+[fetch]
+  # Prune branches that no longer exist remote.
+  # Same for tags.
+  prune = true
+  pruneTags = true
+[user]
+  useConfigOnly = true
+[diff]
+  indentHeuristic = on
+  noprefix = true
+  colorMoved = default
+[diff "nodiff"]
+	command = true
+[rerere]
+  # Remember my merges
+  # http://gitfu.wordpress.com/2008/04/20/git-rerere-rereremember-what-you-did-last-time/
+	enabled = 1
+[submodule]
+	recurse = true
+	fetchJobs = 0
+
+# Custom plugins:
+[delta]
+  syntax-theme = GitHub
+  light = true
+	navigate = false
+  inspect-raw-lines = false
+  line-numbers = true
+  # diff-so-fancy = true
+
+  # decorations
+  file-style = none
+  file-decoration-style = none
+  minus-style = syntax auto
+
+# Styling:
+[color]
+  ui = true
+[color "diff-highlight"]
+  oldNormal = red bold
+  oldHighlight = white bold 52
+  newNormal = green bold
+  newHighlight = white bold 22
+[color "diff"]
+  meta = black
+  frag = blue bold
+  commit = black bold
+  old = red bold
+  new = green bold
+  whitespace = red reverse
+
+# Aliases:
+[alias]
+  publish = "!git push origin $(git symbolic-ref --short HEAD) -u"
+  push-fork = "!git push fork $(git symbolic-ref --short HEAD) -u"
+  pull-fork = "!git pull fork $(git symbolic-ref --short HEAD)"
+  # Origin: https://stackoverflow.com/a/33548037/4842742
+  prune-branches = "!git fetch -p && for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" {sub(\"refs/heads/\", \"\", $1); print $1}'); do git branch -D $branch; done"
+  main = "!git checkout $(basename $(git symbolic-ref --short refs/remotes/origin/HEAD))"
+  patch = "!git --no-pager diff"
+
+# Allow local customizations in the .gitconfig.local file
+[include]
+  path = ~/.gitconfig.local
+[diff "generated"]
+	binary = true
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main

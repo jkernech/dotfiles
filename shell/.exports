@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+# `.exports` is used to provide custom variables.
+
+
+# === Compiler flags ===
+
+# This is required because `openssl` is keg-only in `brew`,
+# see: `brew info openssl` for more information.
+export LDFLAGS="-L$(brew --prefix)/opt/openssl/lib"
+export CPPFLAGS="-I$(brew --prefix)/opt/openssl/include"
+export CFLAGS="-I$(xcrun --show-sdk-path)/usr/include"
+export PKG_CONFIG_PATH="$(brew --prefix)/opt/openssl/lib/pkgconfig"
+
+
+# === Path modifications ===
+
+# These lines should be the first ones!
+
+# GPG agent:
+PATH="/usr/local/opt/gpg-agent/bin:$PATH"
+
+# Adds `pipx` binary files:
+PATH="$HOME/.local/bin:$PATH"
+
+# Adds `poetry` binary, should be added to the end:
+PATH="$HOME/.poetry/bin:$PATH"
+
+# npm:
+PATH="/usr/local/share/npm/bin:$PATH"
+
+
+# === General ===
+
+# Editor:
+export EDITOR="$(which nano)"
+
+# GPG:
+export GPG_TTY="$(tty)"
+eval "$(gpg-agent --daemon --allow-preset-passphrase > /dev/null 2>&1)"
+
+# Homebrew:
+export HOMEBREW_NO_ANALYTICS=1  # disables statistics that brew collects
+
+# Pagers:
+# This affects every invocation of `less`.
+#
+#   -i   case-insensitive search unless search string contains uppercase letters
+#   -R   color
+#   -F   exit if there is less than one page of content
+#   -X   keep content on screen after exit
+#   -M   show more info at the bottom prompt line
+#   -x4  tabs are 4 instead of 8
+export LESS='-iRFXMx4'
+export PAGER='less'
+export MANPAGER='less'
+
+
+# === Version managers ===
+
+# nvm:
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ]; then
+  source "$(brew --prefix)/opt/nvm/nvm.sh"
+fi
+
+# pyenv:
+eval "$(pyenv init --path)"
+
+# rbenv:
+eval "$(rbenv init -)"
+
+# rustup:
+source "$HOME/.cargo/env"
+
+
+# === Poetry ===
+# https://python-poetry.org/docs/configuration/
+
+export POETRY_VIRTUALENVS_IN_PROJECT=true
+
+
+# === Histories ===
+
+# Enable persistent REPL history for `node`.
+export NODE_REPL_HISTORY="$HOME/.node_history"
+# Use sloppy mode by default, matching web browsers.
+export NODE_REPL_MODE='sloppy'
+
+# Erlang and Elixir shell history:
+export ERL_AFLAGS='-kernel shell_history enabled'
+
+
+# === Code highlight ===
+# https://github.com/zsh-users/zsh-syntax-highlighting
+
+# We won't highlight code longer than 200 chars, because it is slow:
+export ZSH_HIGHLIGHT_MAXLENGTH=200
+
+
+# === PATH ===
+
+# This should be the last line:
+export PATH
